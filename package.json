@@ -1,5 +1,5 @@
 {
-  "name": "my-monorepo",
+  "name": "code-with-dev-monorepo",
   "private": true,
   "scripts": {
     "build": "turbo run build",
