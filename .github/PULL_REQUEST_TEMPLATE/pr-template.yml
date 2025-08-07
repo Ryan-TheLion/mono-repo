@@ -1,0 +1,44 @@
+name: 🚀 PR
+description: 기능 개발 후 코드를 병합하기 위한 템플릿입니다.
+assignees:
+  - "Ryan-TheLion"
+body:
+  - type: input
+    id: issue-number
+    attributes:
+      label: PR과 관련된 이슈번호
+      placeholder: "#123"
+  - type: textarea
+    id: summary
+    attributes:
+      label: 요약 (Summary)
+      description: 변경된 내용을 한두 문장으로 간결하게 요약해주세요.
+      placeholder: |
+        예) 상품 목록 조회 기능 구현
+    validations:
+      required: true
+  - type: textarea
+    id: changes
+    attributes:
+      label: 변경 사항 (Changes)
+      description: 어떤 파일에 어떤 변경이 있었는지 핵심만 요약합니다. 변경된 로직이나 UI에 대한 설명을 추가하면 좋습니다.
+      placeholder: |
+        - [파일명.js]에서 ~~~ 로직 추가
+        - [컴포넌트명] UI 변경
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 체크리스트
+      description: PR을 병합하기 전에 아래 항목들을 확인해주세요.
+      options:
+        - label: "병합 요청 브랜치가 올바른지 확인했습니다. (예: feat/new-ui)"
+          required: true
+        - label: "병합 대상 브랜치가 올바른지 확인했습니다. (예: develop 또는 main)"
+          required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 관련자료
+      description: 관련된 자료(스크린샷 등)를 남기고 싶은 경우 작성해주세요.
