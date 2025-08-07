@@ -23,16 +23,17 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(bootStrapConfig.port, async () => {
-    const port = new URL(await app.getUrl()).port;
-    const timezone =
-      process.env.TZ ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
+  await app.listen(bootStrapConfig.port);
 
-    Logger.log(
-      `\nport: ${port}\ntimezone: ${timezone}`,
-      'NestApplication:listen',
-    );
-  });
+  const appURL = new URL(await app.getUrl());
+
+  const port = appURL.port;
+  const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  Logger.log(
+    `\nport: ${port}\nlocal timezone: ${localTimezone}`,
+    'NestApplication:listen',
+  );
 }
 
-bootstrap();
+void bootstrap();
