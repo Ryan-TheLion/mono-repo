@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+@theme pretendard {
+  --font-pretendard: var(--font-pretendard);
+}

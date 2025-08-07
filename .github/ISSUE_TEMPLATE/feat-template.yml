@@ -1,0 +1,45 @@
+name: 🛠️ 기능 개발
+description: 새로운 기능을 구현하기 위한 이슈입니다.
+title: "[feat]: "
+labels: ["enhancement"]
+assignees:
+  - "Ryan-TheLion"
+body:
+  - type: checkboxes
+    id: work-type
+    attributes:
+      label: 작업 종류
+      description: 이슈에 해당하는 작업 종류를 선택해주세요.
+      options:
+        - label: 프론트엔드
+        - label: 백엔드
+        - label: 인프라 (CI/CD)
+        - label: etc.
+    validations:
+      required: true
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: 기능 설명
+      description: 어떤 기능을 개발하려고 하는지 구체적으로 설명해주세요.
+      placeholder: |
+        - 기능의 핵심 목표
+        - 사용자 관점에서 기대되는 동작
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: 세부 구현 내용
+      description: 이슈를 완료하기 위해 필요한 세부 작업 목록을 작성해주세요.
+      placeholder: |
+        - 백엔드 작업: (예: API 설계)
+        - 프론트엔드 작업: (예: UI 컴포넌트 구현)
+        - 기타 작업: (예: 문서 업데이트, 테스트 코드 작성)
+    validations:
+      required: true
+  - type: textarea
+    id: related-info
+    attributes:
+      label: 관련 정보 (선택사항)
+      description: 참고할 만한 디자인 시안, 레퍼런스 링크 등을 첨부해주세요.
