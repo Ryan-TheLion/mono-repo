@@ -5,6 +5,7 @@ import * as cookieParser from 'cookie-parser';
 import appBootStrapConfig, {
   type BootStrapConfig,
 } from './common/bootstrap.config';
+import { AppResponseInterceptor } from './common/intercepter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +23,7 @@ async function bootstrap() {
       disableErrorMessages: true,
     }),
   );
+  app.useGlobalInterceptors(new AppResponseInterceptor());
 
   await app.listen(bootStrapConfig.port);
 

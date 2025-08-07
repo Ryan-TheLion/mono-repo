@@ -8,6 +8,12 @@ import { ErrorResponseDto } from './error-response.dto';
 export class AppResponseDto<
   Response extends ValidResponse = AppEmptyResponse,
 > extends BaseResponseDto<Response> {
+  static isInstance<Response extends ValidResponse = ValidResponse>(
+    data: unknown,
+  ): data is AppResponseDto<Response> {
+    return data instanceof BaseResponseDto;
+  }
+
   /** status 1xx */
   static Informational = InformationalResponseDto;
   /** status 2xx */
