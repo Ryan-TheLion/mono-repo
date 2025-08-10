@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { AppEmptyResponse, ValidResponse } from '../types';
+import { type AppEmptyResponse, type ValidResponse } from '../types';
 import { BaseResponseDto } from './base-response.dto';
 
 export class RedirectionResponseDto<

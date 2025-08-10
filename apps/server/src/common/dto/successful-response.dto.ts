@@ -1,5 +1,5 @@
 import { BaseResponseDto } from './base-response.dto';
-import { AppEmptyResponse, ValidResponse } from '../types';
+import { type AppEmptyResponse, type ValidResponse } from '../types';
 import { HttpStatus } from '@nestjs/common';
 
 export class SuccessfulResponseDto<

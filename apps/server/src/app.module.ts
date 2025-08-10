@@ -3,6 +3,11 @@ import { CommonModule } from './common/common.module';
 import { AsyncLocalStorageModule } from './async-local-storage/async-local-storage.module';
 import { RequestMetaAsyncLocalStorageMiddleware } from './async-local-storage/middleware';
 import { JwtModule } from '@nestjs/jwt';
+import { APP_FILTER } from '@nestjs/core';
+import {
+  HttpExceptionFilter,
+  ThrowedErrorExceptionFilter,
+} from './common/exception-filter';
 
 @Module({
   imports: [
@@ -11,7 +16,16 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({ global: true }),
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: ThrowedErrorExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -1,8 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
-import { AppEmptyResponse, ValidResponse } from '../types';
+import { type AppEmptyResponse, type ValidResponse } from '../types';
 import { BaseResponseDto } from './base-response.dto';
 
-type ErrorStatus =
+export type ErrorStatus =
   | HttpStatus.BAD_REQUEST
   | HttpStatus.UNAUTHORIZED
   | HttpStatus.PAYMENT_REQUIRED
@@ -40,116 +40,6 @@ type ErrorStatus =
 export class ErrorResponseDto<
   Response extends ValidResponse = AppEmptyResponse,
 > extends BaseResponseDto<Response> {
-  private static errorDtoMap = {
-    [HttpStatus.BAD_REQUEST]: this.badRequest.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['badRequest'],
-    [HttpStatus.UNAUTHORIZED]: this.unauthorized.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['unauthorized'],
-    [HttpStatus.PAYMENT_REQUIRED]: this.paymentRequired.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['paymentRequired'],
-    [HttpStatus.FORBIDDEN]: this.forbidden.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['forbidden'],
-    [HttpStatus.NOT_FOUND]: this.notFound.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['notFound'],
-    [HttpStatus.METHOD_NOT_ALLOWED]: this.methodNotAllowed.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['methodNotAllowed'],
-    [HttpStatus.NOT_ACCEPTABLE]: this.notAcceptable.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['notAcceptable'],
-    [HttpStatus.PROXY_AUTHENTICATION_REQUIRED]:
-      this.proxyAuthenticationRequired.bind(
-        this,
-      ) as (typeof ErrorResponseDto)['proxyAuthenticationRequired'],
-    [HttpStatus.REQUEST_TIMEOUT]: this.requestTimeout.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['requestTimeout'],
-    [HttpStatus.CONFLICT]: this.conflict.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['conflict'],
-    [HttpStatus.GONE]: this.gone.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['gone'],
-    [HttpStatus.LENGTH_REQUIRED]: this.lengthRequired.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['lengthRequired'],
-    [HttpStatus.PRECONDITION_FAILED]: this.preconditionFailed.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['preconditionFailed'],
-    [HttpStatus.PAYLOAD_TOO_LARGE]: this.payloadTooLarge.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['payloadTooLarge'],
-    [HttpStatus.URI_TOO_LONG]: this.uriTooLong.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['uriTooLong'],
-    [HttpStatus.UNSUPPORTED_MEDIA_TYPE]: this.unsupportedMediaType.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['unsupportedMediaType'],
-    [HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE]:
-      this.requestedRangeNotSatisfiable.bind(
-        this,
-      ) as (typeof ErrorResponseDto)['requestedRangeNotSatisfiable'],
-    [HttpStatus.EXPECTATION_FAILED]: this.expectationFailed.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['expectationFailed'],
-    [HttpStatus.I_AM_A_TEAPOT]: this.iAmTeapot.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['iAmTeapot'],
-    [HttpStatus.MISDIRECTED]: this.misdirected.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['misdirected'],
-    [HttpStatus.UNPROCESSABLE_ENTITY]: this.unprocessableEntity.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['unprocessableEntity'],
-    [HttpStatus.LOCKED]: this.locked.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['locked'],
-    [HttpStatus.FAILED_DEPENDENCY]: this.failedDependency.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['failedDependency'],
-    [HttpStatus.PRECONDITION_REQUIRED]: this.preconditionRequired.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['preconditionRequired'],
-    [HttpStatus.TOO_MANY_REQUESTS]: this.tooManyRequests.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['tooManyRequests'],
-    [HttpStatus.INTERNAL_SERVER_ERROR]: this.internalServerError.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['internalServerError'],
-    [HttpStatus.NOT_IMPLEMENTED]: this.notImplemented.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['notImplemented'],
-    [HttpStatus.BAD_GATEWAY]: this.badGateway.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['badGateway'],
-    [HttpStatus.SERVICE_UNAVAILABLE]: this.serviceUnavailable.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['serviceUnavailable'],
-    [HttpStatus.GATEWAY_TIMEOUT]: this.gatewayTimeout.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['gatewayTimeout'],
-    [HttpStatus.HTTP_VERSION_NOT_SUPPORTED]: this.httpVersionNotSupported.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['httpVersionNotSupported'],
-    [HttpStatus.INSUFFICIENT_STORAGE]: this.insufficientStorage.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['insufficientStorage'],
-    [HttpStatus.LOOP_DETECTED]: this.loopDetected.bind(
-      this,
-    ) as (typeof ErrorResponseDto)['loopDetected'],
-  };
-
-  static filterStatus<Status extends ErrorStatus>(status: Status) {
-    return this.errorDtoMap[status].bind(
-      this,
-    ) as (typeof this.errorDtoMap)[Status];
-  }
-
   /**
    * http 상태 코드 400
    *
@@ -759,42 +649,3 @@ export class ErrorResponseDto<
     return BaseResponseDto.of(HttpStatus.LOOP_DETECTED, response as Response);
   }
 }
-
-// const errorDtoMap = {
-//   [HttpStatus.BAD_REQUEST]: ErrorResponseDto.badRequest,
-//   [HttpStatus.UNAUTHORIZED]: ErrorResponseDto.unauthorized,
-//   [HttpStatus.PAYMENT_REQUIRED]: ErrorResponseDto.paymentRequired,
-//   [HttpStatus.FORBIDDEN]: ErrorResponseDto.forbidden,
-//   [HttpStatus.NOT_FOUND]: ErrorResponseDto.notFound,
-//   [HttpStatus.METHOD_NOT_ALLOWED]: ErrorResponseDto.methodNotAllowed,
-//   [HttpStatus.NOT_ACCEPTABLE]: ErrorResponseDto.notAcceptable,
-//   [HttpStatus.PROXY_AUTHENTICATION_REQUIRED]:
-//     ErrorResponseDto.proxyAuthenticationRequired,
-//   [HttpStatus.REQUEST_TIMEOUT]: ErrorResponseDto.requestTimeout,
-//   [HttpStatus.CONFLICT]: ErrorResponseDto.conflict,
-//   [HttpStatus.GONE]: ErrorResponseDto.gone,
-//   [HttpStatus.LENGTH_REQUIRED]: ErrorResponseDto.lengthRequired,
-//   [HttpStatus.PRECONDITION_FAILED]: ErrorResponseDto.preconditionFailed,
-//   [HttpStatus.PAYLOAD_TOO_LARGE]: ErrorResponseDto.payloadTooLarge,
-//   [HttpStatus.URI_TOO_LONG]: ErrorResponseDto.uriTooLong,
-//   [HttpStatus.UNSUPPORTED_MEDIA_TYPE]: ErrorResponseDto.unsupportedMediaType,
-//   [HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE]:
-//     ErrorResponseDto.requestedRangeNotSatisfiable,
-//   [HttpStatus.EXPECTATION_FAILED]: ErrorResponseDto.expectationFailed,
-//   [HttpStatus.I_AM_A_TEAPOT]: ErrorResponseDto.iAmTeapot,
-//   [HttpStatus.MISDIRECTED]: ErrorResponseDto.misdirected,
-//   [HttpStatus.UNPROCESSABLE_ENTITY]: ErrorResponseDto.unprocessableEntity,
-//   [HttpStatus.LOCKED]: ErrorResponseDto.locked,
-//   [HttpStatus.FAILED_DEPENDENCY]: ErrorResponseDto.failedDependency,
-//   [HttpStatus.PRECONDITION_REQUIRED]: ErrorResponseDto.preconditionRequired,
-//   [HttpStatus.TOO_MANY_REQUESTS]: ErrorResponseDto.tooManyRequests,
-//   [HttpStatus.INTERNAL_SERVER_ERROR]: ErrorResponseDto.internalServerError,
-//   [HttpStatus.NOT_IMPLEMENTED]: ErrorResponseDto.notImplemented,
-//   [HttpStatus.BAD_GATEWAY]: ErrorResponseDto.badGateway,
-//   [HttpStatus.SERVICE_UNAVAILABLE]: ErrorResponseDto.serviceUnavailable,
-//   [HttpStatus.GATEWAY_TIMEOUT]: ErrorResponseDto.gatewayTimeout,
-//   [HttpStatus.HTTP_VERSION_NOT_SUPPORTED]:
-//     ErrorResponseDto.httpVersionNotSupported,
-//   [HttpStatus.INSUFFICIENT_STORAGE]: ErrorResponseDto.insufficientStorage,
-//   [HttpStatus.LOOP_DETECTED]: ErrorResponseDto.loopDetected,
-// };
