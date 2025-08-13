@@ -1,10 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import {
+  LoginWithPasswordRequestDto,
+  RefreshAccessTokenRequestDto,
+} from './dto';
 
 // TODO: supabase service 의존성 주입
 @Injectable()
 export class AuthService {
   // TODO: supabase service로 요청
-  async loginWithPassword() {
+  async loginWithPassword(dto: LoginWithPasswordRequestDto) {
+    console.log({ dto });
+
     return Promise.resolve('login');
   }
 
@@ -14,17 +20,14 @@ export class AuthService {
   }
 
   // TODO: supabase service로 요청
-  async getSessionUser() {
-    return Promise.resolve('sessionUser');
-  }
-
-  // TODO: supabase service로 요청
   async getUserFromJwt() {
     return Promise.resolve('user');
   }
 
   // TODO: supabase service로 요청
-  async refreshAccessToken() {
+  async refreshAccessToken(dto: RefreshAccessTokenRequestDto) {
+    console.log({ dto });
+
     return Promise.resolve('refreshAccessToken');
   }
 }
