@@ -1,7 +1,8 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { ProfileResponseDto } from './profile.dto';
+import { type TemporalUnit } from 'src/common/types';
 
-export class LoginWithPasswordRequestDto {
+export class LoginCredential {
   @IsEmail()
   email: string;
 
@@ -10,12 +11,14 @@ export class LoginWithPasswordRequestDto {
   password: string;
 }
 
+export class LoginWithPasswordRequestDto extends LoginCredential {}
+
 export class LoginWithPasswordResponseDto {
   accessToken: string;
 
   refreshToken: string;
 
-  expiresAt: number;
+  expiresAt: TemporalUnit.MilliSecond;
 
   user: ProfileResponseDto;
 }

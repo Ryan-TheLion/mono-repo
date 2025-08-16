@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AppResponseDto } from 'src/common/dto';
 import { AuthService } from './auth.service';
 import {
@@ -8,82 +16,85 @@ import {
   RefreshAccessTokenRequestDto,
   RefreshAccessTokenResponseDto,
 } from './dto';
+import { AsyncLocalStorage } from 'async_hooks';
+import { type RequestMetaStore } from 'src/async-local-storage/types';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly asyncLocalStorage: AsyncLocalStorage<RequestMetaStore>,
+  ) {}
 
-  // TODO: 실제 서비스 반환값을 활용하여 응답 구현
   @Post('login')
   async loginWithPassword(
     @Body() dto: LoginWithPasswordRequestDto,
   ): Promise<AppResponseDto<LoginWithPasswordResponseDto>> {
-    const response = await this.authService.loginWithPassword(dto);
+    const authHeader = this.asyncLocalStorage.getStore()!.authHeader;
 
-    console.log(response);
+    if (authHeader.type === 'Bearer' || authHeader.type === 'Basic')
+      throw new BadRequestException(
+        '로그인 요청에는 Authorization 헤더를 포함할 수 없습니다',
+      );
+
+    const { user, session } = await this.authService.loginWithPassword(dto);
 
     return Promise.resolve(
       AppResponseDto.Successful.ok<LoginWithPasswordResponseDto>({
-        accessToken: 'accessToken',
-        refreshToken: 'refreshToken',
-        expiresAt: Date.now() + 1000 * 60 * 60,
-        user: {
-          id: '7f81b19a-9c76-4a4e-8d82-8c1d5f8a619c',
-          email: 'mock@emai.com',
-          phone: null,
-          user_role: 'user',
-        },
+        accessToken: session.access_token,
+        refreshToken: session.refresh_token,
+        expiresAt: session.expires_at!,
+        user,
       }),
     );
   }
 
-  // TODO: 실제 서비스 반환값을 활용하여 응답 구현
   @Post('logout')
   async logout(): Promise<AppResponseDto> {
-    const response = await this.authService.logout();
+    // TODO: passport jwt 가드 적용
 
-    console.log(response);
+    const authHeader = this.asyncLocalStorage.getStore()!.authHeader;
+
+    const bearerToken = authHeader.type === 'Bearer' ? authHeader.jwt : null;
+
+    if (!bearerToken) throw new UnauthorizedException();
+
+    await this.authService.logout(bearerToken);
 
     return Promise.resolve(AppResponseDto.Successful.noContent());
   }
 
-  // TODO: 실제 서비스 반환값을 활용하여 응답 구현
   @Get('profile')
   async getUserProfile(): Promise<AppResponseDto<ProfileResponseDto>> {
-    const response = await this.authService.getUserFromJwt();
+    // TODO: passport jwt 가드 적용
 
-    console.log(response);
+    const authHeader = this.asyncLocalStorage.getStore()!.authHeader;
+
+    const bearerToken = authHeader.type === 'Bearer' ? authHeader.jwt : null;
+
+    if (!bearerToken) throw new UnauthorizedException();
+
+    const user = await this.authService.getUser({ jwt: bearerToken });
+
+    if (!user) throw new NotFoundException();
 
     return Promise.resolve(
-      AppResponseDto.Successful.ok<ProfileResponseDto>({
-        id: '7f81b19a-9c76-4a4e-8d82-8c1d5f8a619c',
-        email: 'mock@emai.com',
-        phone: null,
-        user_role: 'user',
-      }),
+      AppResponseDto.Successful.ok<ProfileResponseDto>(user),
     );
   }
 
-  // TODO: 실제 서비스 반환값을 활용하여 응답 구현
   @Post('refresh')
   async refreshAccessToken(
     @Body() dto: RefreshAccessTokenRequestDto,
   ): Promise<AppResponseDto<RefreshAccessTokenResponseDto>> {
-    const response = await this.authService.refreshAccessToken(dto);
-
-    console.log(response);
+    const { user, session } = await this.authService.refreshAccessToken(dto);
 
     return Promise.resolve(
       AppResponseDto.Successful.ok<RefreshAccessTokenResponseDto>({
-        accessToken: 'new_accessToken',
-        refreshToken: 'new_refreshToken',
-        expiresAt: Date.now() + 1000 * 60 * 60,
-        user: {
-          id: '7f81b19a-9c76-4a4e-8d82-8c1d5f8a619c',
-          email: 'mock@emai.com',
-          phone: null,
-          user_role: 'user',
-        },
+        accessToken: session.access_token,
+        refreshToken: session.refresh_token,
+        expiresAt: session.expires_at!,
+        user,
       }),
     );
   }

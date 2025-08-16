@@ -3,31 +3,33 @@ import {
   LoginWithPasswordRequestDto,
   RefreshAccessTokenRequestDto,
 } from './dto';
+import { SupabaseService } from 'src/supabase/supabase.service';
 
-// TODO: supabase service 의존성 주입
 @Injectable()
 export class AuthService {
-  // TODO: supabase service로 요청
+  constructor(private readonly supabaseService: SupabaseService) {}
+
   async loginWithPassword(dto: LoginWithPasswordRequestDto) {
-    console.log({ dto });
-
-    return Promise.resolve('login');
+    return await this.supabaseService
+      .getClient()
+      .loginWithPassword({ email: dto.email, password: dto.password });
   }
 
-  // TODO: supabase service로 요청
-  async logout() {
-    return Promise.resolve('logout');
+  async logout(jwt: string) {
+    return await this.supabaseService.getClient().logout(jwt);
   }
 
-  // TODO: supabase service로 요청
-  async getUserFromJwt() {
-    return Promise.resolve('user');
+  async getUser(filter: { jwt: string }) {
+    return await this.supabaseService.getClient().getUser({ jwt: filter.jwt });
   }
 
-  // TODO: supabase service로 요청
+  async getSessionUser() {
+    return await this.supabaseService.getClient().getSessionUser();
+  }
+
   async refreshAccessToken(dto: RefreshAccessTokenRequestDto) {
-    console.log({ dto });
-
-    return Promise.resolve('refreshAccessToken');
+    return await this.supabaseService
+      .getClient()
+      .refreshAccessToken(dto.refreshToken);
   }
 }
