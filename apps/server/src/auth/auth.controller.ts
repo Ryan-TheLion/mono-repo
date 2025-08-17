@@ -5,7 +5,7 @@ import {
   Get,
   NotFoundException,
   Post,
-  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { AppResponseDto } from 'src/common/dto';
 import { AuthService } from './auth.service';
@@ -17,7 +17,12 @@ import {
   RefreshAccessTokenResponseDto,
 } from './dto';
 import { AsyncLocalStorage } from 'async_hooks';
-import { type RequestMetaStore } from 'src/async-local-storage/types';
+import {
+  reqMetaAuthHeaderPayloadAs,
+  type RequestMetaStore,
+} from 'src/async-local-storage/types';
+import { SupabaseJwksGuard } from 'src/supabase/strategy';
+import { type TokenType } from 'src/common/types';
 
 @Controller('auth')
 export class AuthController {
@@ -39,48 +44,38 @@ export class AuthController {
 
     const { user, session } = await this.authService.loginWithPassword(dto);
 
-    return Promise.resolve(
-      AppResponseDto.Successful.ok<LoginWithPasswordResponseDto>({
-        accessToken: session.access_token,
-        refreshToken: session.refresh_token,
-        expiresAt: session.expires_at!,
-        user,
-      }),
-    );
+    return AppResponseDto.Successful.ok<LoginWithPasswordResponseDto>({
+      accessToken: session.access_token,
+      refreshToken: session.refresh_token,
+      expiresAt: session.expires_at!,
+      user,
+    });
   }
 
+  @UseGuards(SupabaseJwksGuard)
   @Post('logout')
   async logout(): Promise<AppResponseDto> {
-    // TODO: passport jwt 가드 적용
-
-    const authHeader = this.asyncLocalStorage.getStore()!.authHeader;
-
-    const bearerToken = authHeader.type === 'Bearer' ? authHeader.jwt : null;
-
-    if (!bearerToken) throw new UnauthorizedException();
+    const bearerToken = reqMetaAuthHeaderPayloadAs<TokenType.Bearer>(
+      this.asyncLocalStorage.getStore()!.authHeader,
+    ).jwt;
 
     await this.authService.logout(bearerToken);
 
-    return Promise.resolve(AppResponseDto.Successful.noContent());
+    return AppResponseDto.Successful.noContent();
   }
 
+  @UseGuards(SupabaseJwksGuard)
   @Get('profile')
   async getUserProfile(): Promise<AppResponseDto<ProfileResponseDto>> {
-    // TODO: passport jwt 가드 적용
-
-    const authHeader = this.asyncLocalStorage.getStore()!.authHeader;
-
-    const bearerToken = authHeader.type === 'Bearer' ? authHeader.jwt : null;
-
-    if (!bearerToken) throw new UnauthorizedException();
+    const bearerToken = reqMetaAuthHeaderPayloadAs<TokenType.Bearer>(
+      this.asyncLocalStorage.getStore()!.authHeader,
+    ).jwt;
 
     const user = await this.authService.getUser({ jwt: bearerToken });
 
     if (!user) throw new NotFoundException();
 
-    return Promise.resolve(
-      AppResponseDto.Successful.ok<ProfileResponseDto>(user),
-    );
+    return AppResponseDto.Successful.ok<ProfileResponseDto>(user);
   }
 
   @Post('refresh')
@@ -89,13 +84,11 @@ export class AuthController {
   ): Promise<AppResponseDto<RefreshAccessTokenResponseDto>> {
     const { user, session } = await this.authService.refreshAccessToken(dto);
 
-    return Promise.resolve(
-      AppResponseDto.Successful.ok<RefreshAccessTokenResponseDto>({
-        accessToken: session.access_token,
-        refreshToken: session.refresh_token,
-        expiresAt: session.expires_at!,
-        user,
-      }),
-    );
+    return AppResponseDto.Successful.ok<RefreshAccessTokenResponseDto>({
+      accessToken: session.access_token,
+      refreshToken: session.refresh_token,
+      expiresAt: session.expires_at!,
+      user,
+    });
   }
 }

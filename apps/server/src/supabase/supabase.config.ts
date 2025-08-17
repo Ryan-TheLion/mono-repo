@@ -32,6 +32,10 @@ const supabaseConfigSchema = z.object({
         error: '유효한 범위의 정수가 아닙니다',
       }),
   }),
+  jwksUrl: z.url({
+    protocol: /^https$/,
+    hostname: /\.supabase\.co$/,
+  }),
 });
 
 export const supabaseConfig = registerAs('supabase', () => {
@@ -45,6 +49,7 @@ export const supabaseConfig = registerAs('supabase', () => {
       httpOnly: envBooleanPassthrough(process.env['SUPABASE_COOKIE_HTTP_ONLY']),
       maxAge: envNumberPassthrough(process.env['SUPABASE_COOKIE_MAXAGE']),
     },
+    jwksUrl: process.env['SUPABASE_JWKS_URL'],
   });
 
   if (error) {
