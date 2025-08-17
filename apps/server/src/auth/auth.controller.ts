@@ -5,6 +5,7 @@ import {
   Get,
   NotFoundException,
   Post,
+  UseFilters,
   UseGuards,
 } from '@nestjs/common';
 import { AppResponseDto } from 'src/common/dto';
@@ -23,7 +24,9 @@ import {
 } from 'src/async-local-storage/types';
 import { SupabaseJwksGuard } from 'src/supabase/strategy';
 import { type TokenType } from 'src/common/types';
+import { SupabaseAuthErrorExceptionFilter } from 'src/supabase/exception-filter';
 
+@UseFilters(SupabaseAuthErrorExceptionFilter)
 @Controller('auth')
 export class AuthController {
   constructor(

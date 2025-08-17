@@ -6,7 +6,6 @@ import { SupabaseService } from 'src/supabase/supabase.service';
 import { AsyncLocalStorageModule } from 'src/async-local-storage/async-local-storage.module';
 import { SupabaseJwksStrategy } from 'src/supabase/strategy/jwks.strategy';
 
-// TODO: DI - supabase exception filter
 @Module({
   imports: [JwtModule.register({ global: true }), AsyncLocalStorageModule],
   providers: [AuthService, SupabaseService, SupabaseJwksStrategy],
