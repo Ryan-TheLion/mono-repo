@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
+  AuthFilter,
   LoginWithPasswordRequestDto,
   RefreshAccessTokenRequestDto,
 } from './dto';
@@ -19,7 +20,7 @@ export class AuthService {
     return await this.supabaseService.getClient().logout(jwt);
   }
 
-  async getUser(filter: { jwt: string }) {
+  async getUser(filter: AuthFilter.JwtFilter) {
     return await this.supabaseService.getClient().getUser({ jwt: filter.jwt });
   }
 

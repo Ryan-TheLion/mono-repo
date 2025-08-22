@@ -1,9 +1,10 @@
+import { type Session, type SupabaseClient } from '@supabase/supabase-js';
 import {
-  type Session,
-  type SupabaseClient,
-  type WeakPassword,
-} from '@supabase/supabase-js';
-import { type LoginCredential, type ProfileResponseDto } from 'src/auth/dto';
+  type SupabaseServiceAuthResponse,
+  type LoginCredential,
+  type ProfileResponseDto,
+  type AuthFilter,
+} from 'src/auth/dto';
 import { type TemporalUnitValues, type TemporalUnit } from 'src/common/types';
 
 type OmitClient<Fn> = Fn extends (
@@ -22,19 +23,13 @@ export type SupabaseSession<
 export type LoginWithPassword = (
   client: SupabaseClient,
   { email, password }: LoginCredential,
-) => Promise<{
-  user: ProfileResponseDto;
-  session: SupabaseSession<TemporalUnit.MilliSecond>;
-  weakPassword?: WeakPassword;
-}>;
+) => Promise<SupabaseServiceAuthResponse>;
 
 export type Logout = (client: SupabaseClient, jwt: string) => Promise<void>;
 
 export type GetUser = (
   client: SupabaseClient,
-  filter: {
-    jwt: string;
-  },
+  filter: AuthFilter.JwtFilter,
 ) => Promise<ProfileResponseDto | null>;
 
 export type GetSessionUser = (
@@ -44,10 +39,7 @@ export type GetSessionUser = (
 export type RefreshAccessToken = (
   client: SupabaseClient,
   refreshToken: string,
-) => Promise<{
-  user: ProfileResponseDto;
-  session: SupabaseSession<TemporalUnit.MilliSecond>;
-}>;
+) => Promise<SupabaseServiceAuthResponse>;
 
 export interface SupabaseServiceMethods {
   loginWithPassword: OmitClient<LoginWithPassword>;

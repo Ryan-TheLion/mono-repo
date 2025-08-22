@@ -204,7 +204,6 @@ export class SupabaseService {
     ))!;
 
     return {
-      ...data,
       user: claims.user_profile,
       session: this.convertSession(data.session),
     };
