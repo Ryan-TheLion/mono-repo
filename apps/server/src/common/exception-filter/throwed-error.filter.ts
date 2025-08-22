@@ -3,6 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { AsyncLocalStorage } from 'async_hooks';
 import { type RequestMetaStore } from 'src/async-local-storage/types';
@@ -20,13 +21,19 @@ export class ThrowedErrorExceptionFilter implements ExceptionFilter {
 
     const store = this.asyncLocalStorage.getStore()!;
 
+    const message = (exception?.['message'] as string) || 'error';
+
+    const path = store.path;
+
+    Logger.error(`[Uncaught Exception] ${message}`, path);
+
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
       CatchedErrorResponseDto.of({
         name: (exception?.['name'] as string) || 'Error',
-        message: (exception?.['message'] as string) || 'error',
-        path: store.path,
+        message,
+        path,
         timestamp: store.timestamp,
-      } as CatchedErrorResponseDto),
+      }),
     );
   }
 }

@@ -25,6 +25,8 @@ type ReturnMatchedRegExpFormat = MatchedRegExpFormat | UnMatchedFormat;
 
 const BOOLEAN = ['true', 'false'];
 
+const kebabCaseRegex = /^[a-z]$|^[a-z](?:[a-z]|-(?=[a-z]))*[a-z]$/;
+
 export const isBooleanFormat = (
   format: string,
 ): ReturnMatchedFormat<boolean> => {
@@ -85,4 +87,13 @@ export const isRegExpFormat = (format: string): ReturnMatchedRegExpFormat => {
   return {
     matched: false,
   } satisfies UnMatchedFormat;
+};
+
+export const isKebabCase = (format: string): ReturnMatchedFormat<string> => {
+  const matched = kebabCaseRegex.test(format);
+
+  return {
+    matched,
+    ...(matched && { resolvedValue: format }),
+  } as ReturnMatchedFormat<string>;
 };
