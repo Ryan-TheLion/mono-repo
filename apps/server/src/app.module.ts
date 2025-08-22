@@ -8,9 +8,10 @@ import {
   ThrowedErrorExceptionFilter,
 } from './common/exception-filter';
 import { AuthModule } from './auth/auth.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
-  imports: [CommonModule, AsyncLocalStorageModule, AuthModule],
+  imports: [CommonModule, AsyncLocalStorageModule, AuthModule, MailModule],
   controllers: [],
   providers: [
     {
