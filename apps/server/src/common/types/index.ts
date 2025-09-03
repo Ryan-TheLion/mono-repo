@@ -5,3 +5,4 @@ export * from './time';
 export * from './function';
 export * from './object';
 export * from './builder';
+export * from './module';
