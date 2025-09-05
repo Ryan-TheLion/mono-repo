@@ -5,7 +5,7 @@ import { SendMailRequestDto } from './dto/send-mail.dto';
 import { MailCredentialDto } from './dto/credential.dto';
 import { type Attachment } from 'nodemailer/lib/mailer';
 import { type Imap } from './imap/types';
-import { GetMailBoxQuery } from './dto/get-mail-box.dto';
+import { GetMailBoxQuery } from './dto';
 
 @Injectable()
 export class MailService {

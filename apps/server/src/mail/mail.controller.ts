@@ -26,7 +26,7 @@ import {
   GetMailBoxParams,
   GetMailBoxQuery,
   GetMailBoxResponseDto,
-} from './dto/get-mail-box.dto';
+} from './dto';
 
 @Controller('mail')
 export class MailController {
