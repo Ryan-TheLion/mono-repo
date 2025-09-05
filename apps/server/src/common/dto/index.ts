@@ -23,3 +23,5 @@ export class AppResponseDto<
   /** status 4xx, 5xx */
   static Error = ErrorResponseDto;
 }
+
+export * from './pagination.dto';

@@ -2,7 +2,9 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -20,10 +22,37 @@ import { RequireContentType } from 'src/common/decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { type Attachment } from 'nodemailer/lib/mailer';
 import { type MulterCloudStorageFile } from 'src/multer-cloud-storage/storage/types';
+import {
+  GetMailBoxParams,
+  GetMailBoxQuery,
+  GetMailBoxResponseDto,
+} from './dto/get-mail-box.dto';
 
 @Controller('mail')
 export class MailController {
   constructor(private readonly mailService: MailService) {}
+
+  // TODO: 실제 service 반환 값을 활용하는 로직으로 수정
+  @UseGuards(SupabaseJwksGuard)
+  @Get('boxes/:box')
+  async getMailBox(
+    @Param() params: GetMailBoxParams,
+    @Query() queries: GetMailBoxQuery,
+  ): Promise<AppResponseDto<GetMailBoxResponseDto>> {
+    await this.mailService.getMailBox(params.box, queries);
+
+    return AppResponseDto.Successful.ok<GetMailBoxResponseDto>({
+      mails: [],
+      pagination: {
+        pages: 1,
+        total: 0,
+        page: 1,
+        size: 0,
+        hasNextPage: false,
+        hasPrevPage: false,
+      },
+    });
+  }
 
   @UseGuards(SupabaseJwksGuard)
   @Get('oauth2/introspect')
