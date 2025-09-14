@@ -4,8 +4,7 @@ import { ImapService } from './imap/imap.service';
 import { SendMailRequestDto } from './dto/send-mail.dto';
 import { MailCredentialDto } from './dto/credential.dto';
 import { type Attachment } from 'nodemailer/lib/mailer';
-import { type Imap } from './imap/types';
-import { GetMailBoxQuery } from './dto';
+import { type GetMailsOption, type Imap } from './imap/types';
 
 @Injectable()
 export class MailService {
@@ -25,13 +24,18 @@ export class MailService {
     });
   }
 
-  // TODO: imapService 연동, 반환 타입 수정
-  async getMailBox(mailBox: Imap.MailBox, queries: GetMailBoxQuery) {
-    await Promise.resolve();
+  async getMails(
+    mailBox: Imap.MailBox,
+    credential: MailCredentialDto,
+    options?: GetMailsOption,
+  ) {
+    const { mails, pagination } = await this.imapService
+      .getImapClient()
+      .getMails(credential, mailBox, options);
 
     return {
-      mailBox,
-      queries,
+      mails,
+      pagination,
     };
   }
 }

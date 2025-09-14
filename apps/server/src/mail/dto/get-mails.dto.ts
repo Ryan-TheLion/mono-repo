@@ -8,20 +8,18 @@ import {
   type PaginationWith,
 } from 'src/common/dto';
 
-export class GetMailBoxParams {
+export class GetMailsParam {
   @IsIn(IMAP_MAILBOXES)
   box: Imap.MailBox;
 }
 
-export class GetMailBoxQuery extends PaginationQuery {}
+export class GetMailsQuery extends PaginationQuery {}
 
-interface GetMailBoxPayload {
+interface GetMailsPayload {
   mails: ReceivedEmail[];
 }
 
-export class GetMailBoxResponseDto
-  implements PaginationWith<GetMailBoxPayload>
-{
+export class GetMailsResponseDto implements PaginationWith<GetMailsPayload> {
   mails: ReceivedEmail[];
 
   pagination: Pagination;

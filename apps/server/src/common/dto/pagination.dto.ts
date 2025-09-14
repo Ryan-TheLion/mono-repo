@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, Max, Min } from 'class-validator';
 import { type ValidResponse } from '../types';
-import { isRecord } from '../utils';
+import { isRecord, PaginationUtils } from '../utils';
 
 export type PaginationWith<Payload extends ValidResponse> =
   Payload extends Record<any, any>
@@ -17,11 +17,20 @@ export const PAGINATION_RANGE = {
 >;
 
 export class PaginationQuery {
+  /**
+   * 페이지 번호 (1-based page)
+   */
   @IsNumber()
   @Min(PAGINATION_RANGE.Page.min)
   @Type(() => Number)
   page: number;
 
+  /**
+   * 페이지에 포함될 항목의 최대 개수
+   *
+   * `min`: 5
+   * `max`: 20
+   */
   @IsOptional()
   @IsNumber()
   @Min(PAGINATION_RANGE.Size.min)
@@ -33,50 +42,41 @@ export class PaginationQuery {
 export class Pagination {
   page: number;
 
-  size: number;
+  perSize: number;
+
+  count: number;
 
   total: number;
 
   pages: number;
 
-  hasPrevPage: boolean;
+  overflow: boolean;
 
-  prevPage?: number;
+  prevPage: number | null;
 
-  hasNextPage: boolean;
+  nextPage: number | null;
 
-  nextPage?: number;
+  static of<Payload extends ValidResponse>(payload: Payload) {
+    const paginate: (
+      params: Pick<Pagination, 'total'> & { query: PaginationQuery },
+    ) => PaginationWith<Payload> = ({ total, query }) => {
+      const pagination = PaginationUtils.createPagination({ total, query });
 
-  static with<Payload extends ValidResponse>(
-    payload: Payload,
-    pagination: Pick<Pagination, 'total' | 'page' | 'size'>,
-  ): PaginationWith<Payload> {
-    const pages = Math.ceil(pagination.total / pagination.size);
+      if (isRecord(payload)) {
+        return {
+          ...(payload as Record<any, any>),
+          pagination,
+        } as PaginationWith<Payload>;
+      }
 
-    const hasPrevPage = pagination.page > 1;
-    const hasNextPage = pagination.page < pages;
-
-    const paginationPayload: Pagination = {
-      total: pagination.total,
-      page: pagination.page,
-      size: pagination.size,
-      pages,
-      hasPrevPage,
-      ...(hasPrevPage && { prevPage: pagination.page - 1 }),
-      hasNextPage,
-      ...(hasNextPage && { nextPage: pagination.page + 1 }),
+      return {
+        payload,
+        pagination,
+      } as PaginationWith<Payload>;
     };
 
-    if (isRecord(payload)) {
-      return {
-        ...(payload as Record<any, any>),
-        pagination: paginationPayload,
-      } as PaginationWith<Payload>;
-    }
-
     return {
-      payload,
-      pagination: paginationPayload,
-    } as PaginationWith<Payload>;
+      paginate,
+    };
   }
 }
