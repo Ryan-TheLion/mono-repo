@@ -13,7 +13,7 @@ export class ImapService {
     @Inject(imapConfig.KEY) private readonly config: ImapConfig,
   ) {}
 
-  private createImapClient = async (credential: MailCredentialDto) => {
+  private createImap = async (credential: MailCredentialDto) => {
     const config = this.config;
 
     const imapClient = await AsyncImap.connect(credential, config);
@@ -25,22 +25,24 @@ export class ImapService {
     return imapClient;
   };
 
-  getImapClient(): ImapServiceMethods {
+  async getImapClient(
+    credential: MailCredentialDto,
+  ): Promise<ImapServiceMethods> {
+    const imap = await this.createImap(credential);
+
     return {
-      getMails: (credential, mailBox, param) => {
-        return this.getMails(credential, mailBox, param);
+      getMails: (mailBox, param) => {
+        return this.getMails(imap, mailBox, param);
       },
     };
   }
 
   private getMails: GetMails = async (
-    credential,
+    imap,
     mailBox,
     { query, criteria, markSeen } = {},
   ) => {
-    const imapClient = await this.createImapClient(credential);
-
-    return await imapClient.getMails(mailBox, {
+    return await imap.getMails(mailBox, {
       query,
       criteria,
       markSeen,

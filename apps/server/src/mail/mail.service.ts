@@ -29,9 +29,9 @@ export class MailService {
     credential: MailCredentialDto,
     options?: GetMailsOption,
   ) {
-    const { mails, pagination } = await this.imapService
-      .getImapClient()
-      .getMails(credential, mailBox, options);
+    const imapClient = await this.imapService.getImapClient(credential);
+
+    const { mails, pagination } = await imapClient.getMails(mailBox, options);
 
     return {
       mails,

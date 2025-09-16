@@ -1,12 +1,16 @@
 import { type AnyFunction } from 'src/common/types';
 import { type Imap } from '.';
-import { type MailCredentialDto } from 'src/mail/dto';
 import { type PaginationQuery, type PaginationWith } from 'src/common/dto';
+import { type AsyncImap } from '../async';
 
 type ImapMethod<Fn extends AnyFunction> = (
-  credential: MailCredentialDto,
+  imap: AsyncImap,
   ...params: Parameters<Fn>
 ) => ReturnType<Fn>;
+
+type OmitImap<Fn> = Fn extends (imap: AsyncImap, ...args: infer P) => infer R
+  ? (...args: P) => R
+  : never;
 
 export type GetMailsOption = {
   query?: PaginationQuery;
@@ -25,5 +29,5 @@ export type GetMails = ImapMethod<
 >;
 
 export interface ImapServiceMethods {
-  getMails: GetMails;
+  getMails: OmitImap<GetMails>;
 }
