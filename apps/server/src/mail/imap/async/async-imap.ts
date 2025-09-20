@@ -15,7 +15,7 @@ import {
 import { PaginationUtils } from 'src/common/utils';
 import { SequenceMessage } from '../types/imap';
 
-interface AsyncImapConfig {
+export interface AsyncImapConfig {
   host: string;
   port: number;
 }

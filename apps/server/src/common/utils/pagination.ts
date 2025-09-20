@@ -52,7 +52,7 @@ export class PaginationUtils {
 
     const pages = this.pages({ total, size });
 
-    const overflow = page > pages;
+    const overflow = !pages ? false : page > pages;
     const empty = !total;
 
     if (empty || overflow) {

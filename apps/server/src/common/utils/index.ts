@@ -3,5 +3,6 @@ export * from './format';
 export * from './builder';
 export * from './kibi-byte';
 export * from './object';
+export * from './array';
 export * from './stream';
 export * from './pagination';
