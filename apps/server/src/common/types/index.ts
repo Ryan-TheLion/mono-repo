@@ -2,5 +2,8 @@ export * from './auth-header';
 export * from './primitive';
 export * from './response';
 export * from './time';
+export * from './function';
+export * from './array';
 export * from './object';
 export * from './builder';
+export * from './module';
