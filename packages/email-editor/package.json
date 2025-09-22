@@ -1,0 +1,52 @@
+{
+  "name": "@repo/email-editor",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./style.css": "./dist/index.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "dev": "tsup --env.NODE_ENV=development --watch",
+    "build": "tsup --env.NODE_ENV=production"
+  },
+  "dependencies": {
+    "@blocknote/core": "^0.39.1",
+    "@blocknote/react": "^0.39.1",
+    "@react-email/components": "^0.5.3",
+    "react-email": "^4.2.11"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.11",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.11"
+  },
+  "peerDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
